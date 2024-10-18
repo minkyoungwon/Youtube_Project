@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+
+
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <title>mkw_YoTube_Project</title>
+
+    <style type="text/css">
+        /* 여기에 추가적인 CSS를 추가할 수 있습니다. */
+    </style>
+</head>
+
+
+
+
+
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-4">YouTube 데이터</h1>
+            <p class="lead">MongoDB에서 가져온 YouTube 데이터를 표시합니다.</p>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">순위</th>
+                    <th scope="col">inserted_at</th>
+                    <th scope="col">published_at</th>
+                    <th scope="col">title</th>
+                    <th scope="col">url</th>
+                    <th scope="col">id</th>
+                    <th scope="col">video_id</th>
+                </tr>
+            </thead>
+            <tbody id="youtube-data-body">
+                <!-- JavaScript로 데이터가 추가될 곳 -->
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+    <script>
+        // 서버에서 데이터를 가져와 테이블에 표시하는 함수
+        function loadData() {
+            $.ajax({
+                type: "GET",
+                url: "/get_data",  // Flask 서버의 엔드포인트
+                success: function(data) { // 나는 메롱
+                    const tableBody = document.getElementById("youtube-data-body");
+                    tableBody.innerHTML = "";  // 기존 내용을 초기화
+
+                    data.forEach((item, index) => {
+                        const newRow = `
+                            <tr>
+                                <th scope="row">${index + 1}</th>
+                                <td>${item.inserted_at}</td>
+                                <td>${item.published_at}</td>
+                                <td>${item.title}</td>
+                                <td><a href="${item.url}" target="_blank">${item.url}</a></td>
+                                <td>${item.id}</td>
+                                <td>${item.video_id}</td>
+                            </tr>
+                        `;
+                        tableBody.insertAdjacentHTML("beforeend", newRow);
+                    });
+                },
+                error: function() {
+                    console.error("데이터를 불러오는 데 실패했습니다.");
+                }
+            });
+        }
+
+        // 페이지 로드 시 데이터를 불러옴
+        $(document).ready(function() {
+            loadData();
+        });
+    </script>
+</body>
+</html>
